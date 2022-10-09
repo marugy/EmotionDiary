@@ -18,7 +18,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/new" element={<New />} />
           <Route path="/edit" element={<Edit />} />
-          <Route path="/diary" element={<Diary />} />
+          <Route path="/diary/:id" element={<Diary />} />
+          {/* id의 값에 따라 다른 diary를 보여주겠다. */}
         </Routes>
         <RouteTest />
       </div>
