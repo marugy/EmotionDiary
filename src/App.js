@@ -1,3 +1,5 @@
+import React, { useReducer, useRef } from "react";
+
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -6,54 +8,89 @@ import New from "./pages/New";
 import Edit from "./pages/Edit";
 import Diary from "./pages/Diary";
 
-//Components
-import MyButton from "./components/MyButton";
-import MyHeader from "./components/MyHeader";
+const reducer = (state, action) => {
+  let newState = [];
+  switch (action.type) {
+    case "INIT": {
+      return action.data;
+    }
+    case "CRAETE": {
+      // const newItem = {
+      //   ...action.data,
+      // };
+      newState = [action.data, ...state];
+      break;
+    }
+    case "REMOVE": {
+      newState = state.filter((it) => it.id !== action.targetId);
+      break;
+    }
+    case "EDIT": {
+      newState = state.map((it) =>
+        it.id === action.data.id ? { ...action.data } : it
+      );
+      break;
+    }
+    default:
+      return state;
+  }
+  return newState;
+};
+
+export const DiaryStateContext = React.createContext();
+export const DiaryDispatchContext = React.createContext();
 
 function App() {
-  const env = process.env; // Process url이 작동안하면 작업
-  env.PUBLIC_URL = env.PUBLIC_URL || ""; //존재하면 담고 아님 비워라
+  const [data, dispatch] = useReducer(reducer, []);
+
+  const dataId = useRef(0);
+  // CREATE
+  const onCreate = (date, content, emotion) => {
+    dispatch({
+      type: "CREATE",
+      data: {
+        id: dataId.current,
+        data: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+    dataId.current += 1;
+  };
+  // REMOVE
+  const onRemove = (targetId) => {
+    dispatch({ type: "REMOVE", targetId });
+  };
+  // EDIT
+  const onEdit = (targetId, date, content, emotion) => {
+    dispatch({
+      type: "EDIT",
+      data: {
+        id: targetId,
+        date: new Date(date).getTime(),
+        content,
+        emotion,
+      },
+    });
+  };
 
   return (
-    <BrowserRouter>
-      <div className="App">
-        <MyHeader
-          headText={"APP"}
-          leftChild={
-            <MyButton text={"왼쪽버튼"} onClick={() => alert("왼쪽 클릭")} />
-          }
-          rightChild={
-            <MyButton
-              text={"오른쪽 버튼"}
-              onClick={() => alert("오른쪽 클릭")}
-            />
-          }
-        />
-        <h2>App.js</h2>
-        {/* 어떤 위치에 있던 public dir를 향하게 됌
-        <img src={process.env.PUBLIC_URL + `/assets/emotion1.png`} />*/}
-
-        <MyButton
-          text={"버튼"}
-          onClick={() => alert("버튼클릭")}
-          type={"positive"}
-        />
-        <MyButton
-          text={"버튼"}
-          onClick={() => alert("버튼클릭")}
-          type={"negative"}
-        />
-        <MyButton text={"버튼"} onClick={() => alert("버튼클릭")} />
-        <Routes>
-          {/* path가 /이면 Home컴포넌트를 보여라 */}
-          <Route path="/" element={<Home />} />
-          <Route path="/new" element={<New />} />
-          <Route path="/edit" element={<Edit />} />
-          <Route path="/diary/:id" element={<Diary />} />
-          {/* id의 값에 따라 다른 diary를 보여주겠다. */}
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <DiaryStateContext.Provider value={data}>
+      <DiaryDispatchContext.Provider vlaue={{ onCreate, onEdit, onRemove }}>
+        <BrowserRouter>
+          <div className="App">
+            <Routes>
+              {/* path가 /이면 Home컴포넌트를 보여라 */}
+              <Route path="/" element={<Home />} />
+              <Route path="/new" element={<New />} />
+              <Route path="/edit" element={<Edit />} />
+              <Route path="/diary/:id" element={<Diary />} />
+              {/* id의 값에 따라 다른 diary를 보여주겠다. */}
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </DiaryDispatchContext.Provider>
+    </DiaryStateContext.Provider>
   );
 }
 
