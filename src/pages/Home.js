@@ -20,10 +20,14 @@ const Home = () => {
         curDate.getMonth(),
         1
       ).getTime();
+      // js에서 시간을 비교할때는 시분초까지 비교를 한다.
       const lastDay = new Date(
         curDate.getFullYear(),
         curDate.getMonth() + 1,
-        0
+        0,
+        23,
+        59,
+        59
       ).getTime();
 
       setData(

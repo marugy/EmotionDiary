@@ -78,7 +78,7 @@ function App() {
 
   // console.log(new Date().getTime()); date 더미 뽑기 위해서
 
-  const dataId = useRef(0);
+  const dataId = useRef(6);
 
   // CREATE
   const onCreate = (date, content, emotion) => {
