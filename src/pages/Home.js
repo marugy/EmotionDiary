@@ -6,6 +6,12 @@ import MyButton from "../components/MyButton";
 import DiaryList from "../components/DiaryList";
 
 const Home = () => {
+  useEffect(() => {
+    // title이라는 태그 네임을 가져와라
+    const titleElement = document.getElementsByTagName("title")[0];
+    titleElement.innerHTML = `감정 일기장`;
+  }, []);
+
   const diaryList = useContext(DiaryStateContext);
 
   const [data, setData] = useState([]);
