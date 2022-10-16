@@ -36,10 +36,6 @@ const Home = () => {
     }
   }, [diaryList, curDate]); //일기가 추가되거나 수정되었을때도 리스트를 초기화해야하니까 diaryList 추가
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
   const increaseMonth = () => {
     setCurDate(
       new Date(curDate.getFullYear(), curDate.getMonth() + 1, curDate.getDate())
