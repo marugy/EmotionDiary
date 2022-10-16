@@ -14,7 +14,7 @@ const reducer = (state, action) => {
     case "INIT": {
       return action.data;
     }
-    case "CRAETE": {
+    case "CREATE": {
       // const newItem = {
       //   ...action.data,
       // };
@@ -79,13 +79,14 @@ function App() {
   // console.log(new Date().getTime()); date 더미 뽑기 위해서
 
   const dataId = useRef(0);
+
   // CREATE
   const onCreate = (date, content, emotion) => {
     dispatch({
       type: "CREATE",
       data: {
         id: dataId.current,
-        data: new Date(date).getTime(),
+        date: new Date(date).getTime(),
         content,
         emotion,
       },
@@ -118,7 +119,7 @@ function App() {
               {/* path가 /이면 Home컴포넌트를 보여라 */}
               <Route path="/" element={<Home />} />
               <Route path="/new" element={<New />} />
-              <Route path="/edit" element={<Edit />} />
+              <Route path="/edit/:id" element={<Edit />} />
               <Route path="/diary/:id" element={<Diary />} />
               {/* id의 값에 따라 다른 diary를 보여주겠다. */}
             </Routes>
